@@ -12,7 +12,7 @@ Future<void> init() async {
 }
 
 void initInjections(GetIt serviceLocator) {
-  serviceLocator.registerFactory(() => LoginBloc(serviceLocator()));
+  serviceLocator.registerFactory(() => LoginBloc(loginUseCase: serviceLocator()));
 
   serviceLocator.registerLazySingleton(
     () => Login(

@@ -7,25 +7,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../injection_container.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late LoginBloc _bloc;
+ // late LoginBloc _bloc;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late String inputLogin;
   late String inputPassword;
 
   @override
   void dispose() {
-    _bloc.close();
+   // _bloc.close();
     super.dispose();
   }
 
   @override
   void didChangeDependencies() {
-    _bloc = serviceLocator<LoginBloc>();
+   // _bloc = serviceLocator<LoginBloc>();
     super.didChangeDependencies();
   }
 
@@ -41,9 +43,18 @@ class _LoginPageState extends State<LoginPage> {
 
   _buildBody() {
     return BlocProvider(
-      create: (_) => _bloc,
-      child: BlocListener(
-        bloc: _bloc,
+      create: (_) =>serviceLocator<LoginBloc>(),
+      child: BlocConsumer<LoginBloc, LoginState>(
+        builder: (BuildContext context, state) {
+          print("state is $state");
+          if (state is InitialLoginState) {
+            return _buildForm();
+          } else if (state is CheckingLoginState) {
+            return LoadingWidget();
+          } else {
+            return _buildForm();
+          }
+        },
         listener: (context, state) {
           if (state is ErrorLoggedState) {
             final snackBar = SnackBar(content: Text('Invalid credentials...'));
@@ -55,22 +66,13 @@ class _LoginPageState extends State<LoginPage> {
             Scaffold.of(context).showSnackBar(snackBar);
           }
         },
-        child: BlocBuilder<LoginBloc, LoginState>(
-          builder: (BuildContext context, state) {
-            if (state is InitialLoginState) {
-              return _buildForm();
-            } else if (state is CheckingLoginState) {
-              return LoadingWidget();
-            } else {
-              return _buildForm();
-            }
-          },
-        ),
+
       ),
     );
   }
 
   _buildForm() {
+    print('dfef');
     return Form(
         key: _formKey,
         //autovalidate: false,
@@ -172,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                             password: inputPassword,
                           );
                           print(loginDTO);
-                          _bloc.add(CheckLoginEvent(login: loginDTO));
+                          BlocProvider.of<LoginBloc>(context).add(CheckLoginEvent(login: loginDTO));
                         }
                       },
                       child: Text(

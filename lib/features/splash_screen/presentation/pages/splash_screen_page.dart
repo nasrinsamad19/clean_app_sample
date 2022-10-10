@@ -16,58 +16,59 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  final SplashScreenBloc _splashBloc = SplashScreenBloc();
+
 
   @override
   void initState() {
-    _splashBloc.add(SetSplash());
+  //  _splashBloc.add(SetSplash());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        color: // Color.fromARGB(255, 4, 60, 105)
-            Colors.white,
-        child: BlocProvider(
-          create: (_) => _splashBloc,
-          child: BlocListener<SplashScreenBloc, SplashScreenState>(
-            listener: (context, state) {
-              if (state is Loaded) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => LoginPage(),
+      body: FutureBuilder<bool>(
+        future: initPage(true),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.data != true) {
+              Future.delayed(const Duration(seconds: 2), () {
+               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) =>LoginPage()));
+              });
+            } else {
+              Future.delayed(const Duration(seconds: 2), () {
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) =>LoginPage()));
+
+              });
+            }
+          }
+          return Container(
+            decoration: const BoxDecoration(
+              color: Colors.grey,
+
+            ),
+            child:
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).size.height / 5,
+                      left: MediaQuery.of(context).size.width  / 20,
+                      right: MediaQuery.of(context).size.width / 20,
+                    ),
+                    child: Text('Welcome')
                   ),
-                );
-              }
-            },
-            child: _buildSplashWidget(),
-          ),
-        ),
+                )
+
+          );
+        },
       ),
     );
   }
 
-  Widget _buildSplashWidget() {
-    // ignore: prefer_const_constructors
-    return Center(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
-        Text(
-          'Limitless',
-          style: TextStyle(fontSize: 15, color: Colors.white),
-        ),
-        Text(
-          'Parking',
-          style: TextStyle(fontSize: 15, color: Colors.white),
-        ),
-      ],
-    ));
+  Future<bool> initPage(bool isAuth) async {
+
+    return isAuth;
   }
+
 }

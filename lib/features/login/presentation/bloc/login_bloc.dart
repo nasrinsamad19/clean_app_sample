@@ -9,7 +9,7 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final Login loginUseCase;
-  LoginBloc(this.loginUseCase) : super(InitialLoginState()) {
+  LoginBloc({required this.loginUseCase}) : super(InitialLoginState()) {
     on<LoginEvent>((event, emit) async {
       // TODO: implement event handler
       if (event is CheckLoginEvent) {
