@@ -48,11 +48,11 @@ class _LoginPageState extends State<LoginPage> {
         builder: (BuildContext context, state) {
           print("state is $state");
           if (state is InitialLoginState) {
-            return _buildForm();
+            return _buildForm(context);
           } else if (state is CheckingLoginState) {
             return LoadingWidget();
           } else {
-            return _buildForm();
+            return _buildForm(context);
           }
         },
         listener: (context, state) {
@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _buildForm() {
+  _buildForm(BuildContext context) {
     print('dfef');
     return Form(
         key: _formKey,
