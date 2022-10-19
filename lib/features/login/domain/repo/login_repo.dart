@@ -5,5 +5,6 @@ import '../../../../core/error/failure.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class LoginRepo {
-  Future<Either<Failure, bool>> login(LoginModel loginModel);
+  Future<Either<Failure, LogInEntity>> loginRequests(
+      {required String username, required String password});
 }

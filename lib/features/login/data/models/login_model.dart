@@ -1,37 +1,51 @@
-// import 'package:clean_app_sample/features/login/domain/entities/login.dart';
+// To parse this JSON data, do
+//
+//     final userModel = userModelFromJson(jsonString);
 
-// class LoginModel extends Login {
-//   LoginModel({
-//     required String username,
-//     required String password,
-//   }) : super( username, password);
+import 'dart:convert';
 
-//   factory LoginModel.fromJson(Map<String, dynamic> json) {
-//     return LoginModel(
-//       username: json['username'],
-//       password: json['password'],
-//     );
-//   }
+import 'package:clean_app_sample/features/login/domain/entities/login.dart';
 
-//    Map<String, dynamic> toJson() {
-//     return {
-//       'username': username,
-//       'password': password,
-//     };
-//   }
-// }
-
-import 'package:equatable/equatable.dart';
-
-class User extends Equatable {
-  final int id;
-  final String user;
-
-  User({
-    required this.id,
-    required this.user,
+class UserModel extends LogInEntity {
+  UserModel({
+    required super.message,
+    required this.email,
+    required this.deviceId,
+    required this.password,
+    required this.fbToken,
+    required this.deviceType,
+    required this.deviceLang,
   });
 
-  @override
-  List<Object> get props => [id, user];
+  String email;
+  String deviceId;
+  String password;
+  String fbToken;
+  String deviceType;
+  String deviceLang;
+
+  factory UserModel.fromRawJson(String str) =>
+      UserModel.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+        message: json["message"],
+        email: json["email"],
+        deviceId: json["deviceId"],
+        password: json["password"],
+        fbToken: json["fbToken"],
+        deviceType: json["deviceType"],
+        deviceLang: json["deviceLang"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "message": message,
+        "email": email,
+        "deviceId": deviceId,
+        "password": password,
+        "fbToken": fbToken,
+        "deviceType": deviceType,
+        "deviceLang": deviceLang,
+      };
 }

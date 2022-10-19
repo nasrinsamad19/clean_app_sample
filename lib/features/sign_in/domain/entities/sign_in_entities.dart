@@ -1,10 +1,11 @@
 import 'package:equatable/equatable.dart';
 
-class LogInEntity extends Equatable {
+class SignInEntity extends Equatable {
   final String message;
 
-  const LogInEntity({required this.message});
+  const SignInEntity({required this.message});
 
   @override
+  // TODO: implement props
   List<Object?> get props => [message];
 }

@@ -1,6 +1,8 @@
 import 'package:clean_app_sample/features/login/presentation/bloc/login_bloc.dart';
 import 'package:clean_app_sample/features/login/presentation/dto/dto.dart';
 import 'package:clean_app_sample/features/login/presentation/widgets/loading_widget.dart';
+import 'package:clean_app_sample/features/sign_in/presentaion/bloc/sign_in_bloc.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,50 +16,47 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
- // late LoginBloc _bloc;
+  // late LoginBloc _bloc;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late String inputLogin;
   late String inputPassword;
 
   @override
   void dispose() {
-   // _bloc.close();
+    // _bloc.close();
     super.dispose();
   }
 
   @override
   void didChangeDependencies() {
-   // _bloc = serviceLocator<LoginBloc>();
+    // _bloc = serviceLocator<LoginBloc>();
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login Demo'),
-      ),
       body: _buildBody(),
     );
   }
 
   _buildBody() {
     return BlocProvider(
-      create: (_) =>serviceLocator<LoginBloc>(),
+      create: (_) => sl<LoginBloc>(),
       child: BlocConsumer<LoginBloc, LoginState>(
         builder: (BuildContext context, state) {
           print("state is $state");
           if (state is InitialLoginState) {
             return _buildForm(context);
-          } else if (state is CheckingLoginState) {
+          } else if (state is LoadingLoginState) {
             return LoadingWidget();
           } else {
             return _buildForm(context);
           }
         },
         listener: (context, state) {
-          if (state is ErrorLoggedState) {
-            final snackBar = SnackBar(content: Text('Invalid credentials...'));
+          if (state is ErrorLoginState) {
+            final snackBar = SnackBar(content: Text(state.message));
             // ignore: deprecated_member_use
             Scaffold.of(context).showSnackBar(snackBar);
           } else if (state is LoggedState) {
@@ -66,7 +65,6 @@ class _LoginPageState extends State<LoginPage> {
             Scaffold.of(context).showSnackBar(snackBar);
           }
         },
-
       ),
     );
   }
@@ -93,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Sign in',
+                      'Log in',
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontSize: 25,
@@ -103,30 +101,27 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       height: 40.0,
                       child: TextFormField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            labelStyle: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black,
+                            ),
+                            hintText: 'Enter the username',
+                            labelText: 'Email',
                           ),
-                          labelStyle: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
-                          ),
-                          hintText: 'Enter the username',
-                          labelText: 'Email',
-                        ),
-                        onChanged: (value) {
-                          inputLogin = value;
-                        },
-                        onSaved: (value) {
-                          // This optional block of code can be used to run
-                          // code when the user saves the form.
-                        },
-                        validator: (value) {
-                          return value!.isEmpty
-                              ? 'Username is mandatory'
-                              : null;
-                        },
-                      ),
+                          onChanged: (value) {
+                            inputLogin = value;
+                          },
+                          onSaved: (value) {
+                            // This optional block of code can be used to run
+                            // code when the user saves the form.
+                          },
+                          validator: (value) => EmailValidator.validate(value!)
+                              ? null
+                              : "Enter valid Email "),
                     ),
                     SizedBox(
                       height: 30.0,
@@ -154,9 +149,12 @@ class _LoginPageState extends State<LoginPage> {
                           // code when the user saves the form.
                         },
                         validator: (value) {
-                          return value!.isEmpty
-                              ? 'Password is mandatory'
-                              : null;
+                          if (value!.isEmpty) {
+                            return 'Password is mandatory';
+                          } else if (value.length < 8) {
+                            return 'minimum length is 8 ';
+                          }
+                          return null;
                         },
                       ),
                     ),
@@ -169,12 +167,12 @@ class _LoginPageState extends State<LoginPage> {
                       color: Color.fromARGB(255, 4, 60, 105),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          final loginDTO = LoginDTO(
-                            username: inputLogin,
+                          BlocProvider.of<LoginBloc>(context)
+                              .add(LoginUserEvent(
+                            context: context,
                             password: inputPassword,
-                          );
-                          print(loginDTO);
-                          BlocProvider.of<LoginBloc>(context).add(CheckLoginEvent(login: loginDTO));
+                            username: inputLogin,
+                          ));
                         }
                       },
                       child: Text(

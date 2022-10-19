@@ -37,11 +37,11 @@ dependencies:
   equatable: ^2.0.5
   get_it: ^7.2.0
   flutter_bloc: ^8.1.1
+  http: ^0.13.5
+  shared_preferences: ^2.0.15
+  internet_connection_checker: ^0.0.1+4
   dartz: ^0.10.1
-  connectivity: ^0.4.3+7
-  http: ^0.12.0+2
-  shared_preferences: ^0.5.3+4
-  #data_connection_checker: ^0.3.4
+  email_validator: ^2.1.17
 
 dev_dependencies:
   flutter_test:

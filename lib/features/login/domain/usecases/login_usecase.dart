@@ -7,24 +7,29 @@ import 'package:equatable/equatable.dart';
 import '../../../../core/error/failure.dart';
 import '../../data/models/login_model.dart';
 
-class Login implements UseCase<bool, Params> {
+class LoginUseCase {
   final LoginRepo loginRepository;
 
-  Login(this.loginRepository);
+  LoginUseCase({required this.loginRepository});
 
-  @override
-  Future<Either<Failure, bool>> call(Params params) async {
-    return await loginRepository.login(params.login);
+  Future<Either<Failure, LogInEntity>> call({
+    required String username,
+    required String password,
+  }) async {
+    return await loginRepository.loginRequests(
+      password: password,
+      username: username,
+    );
   }
 }
 
-class Params extends Equatable {
-  final LoginModel login;
+// class Params extends Equatable {
+//   final LoginModel login;
 
-  const Params({
-    required this.login,
-  });
+//   const Params({
+//     required this.login,
+//   });
 
-  @override
-  List<Object> get props => [login];
-}
+//   @override
+//   List<Object> get props => [login];
+// }

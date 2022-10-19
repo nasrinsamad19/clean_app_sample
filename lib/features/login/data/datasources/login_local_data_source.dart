@@ -1,41 +1,53 @@
-// import 'dart:convert';
+import 'dart:convert';
+import 'package:clean_app_sample/core/error/exception.dart';
+import 'package:clean_app_sample/core/servers/server_domain.dart';
+import 'package:clean_app_sample/features/login/data/models/login_model.dart';
+import 'package:clean_app_sample/features/sign_in/data/models/sign_in_model.dart';
+import 'package:dartz/dartz.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-// import 'package:clean_app_sample/core/error/exception.dart';
-// import 'package:clean_app_sample/features/login/data/models/login_model.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
+abstract class LoginLocalDataSources {
+  Future<SignInModel> getCachedUserData();
 
-// abstract class LoginLocalDataSource {
-//   /// Gets the cached [NumberTriviaModel] which was gotten the last time
-//   /// the user had an internet connection.
-//   ///
-//   /// Throws [NoLocalDataException] if no cached data is present.
-//   Future<LoginModel> getLastLogin();
+  Future<Unit> cacheUserData(UserModel loginModel);
 
-//   Future<void> cacheLogin(LoginModel triviaToCache);
-// }
+  Future<Unit> clearCacheUserData();
 
-// const CACHED_LOGIN = 'CACHED_LOGIN';
+  Future<Unit> cacheCurrentUserData(UserModel userDataModel);
+}
 
-// class LoginLocalDataSourceImpl implements LoginLocalDataSource {
-//   final SharedPreferences sharedPreferences;
+class LoginLocalDataSourcesRepoImpl implements LoginLocalDataSources {
+  final SharedPreferences sharedPreferences;
 
-//   LoginLocalDataSourceImpl({required this.sharedPreferences});
+  LoginLocalDataSourcesRepoImpl({required this.sharedPreferences});
 
-//   @override
-//   Future<LoginModel> getLastLogin() {
-//     final jsonString = sharedPreferences.getString(CACHED_LOGIN);
-//     if (jsonString != null) {
-//       return Future.value(LoginModel.fromJson(json.decode(jsonString)));
-//     } else {
-//       throw CacheException();
-//     }
-//   }
+  @override
+  Future<Unit> cacheUserData(UserModel loginModel) async {
+    await sharedPreferences.setString(cachedUserData, json.encode(loginModel));
+    return Future.value(unit);
+  }
 
-//   @override
-//   Future<void> cacheLogin(LoginModel LoginToCache) {
-//     return sharedPreferences.setString(
-//       CACHED_LOGIN,
-//       json.encode(LoginToCache.toJson()),
-//     );
-//   }
-// }
+  @override
+  Future<SignInModel> getCachedUserData() {
+    final jsonString = sharedPreferences.getString(cachedUserData);
+    if (jsonString != null) {
+      SignInModel loginModel = SignInModel.fromJson(json.decode(jsonString));
+      return Future.value(loginModel);
+    } else {
+      throw EmptyCacheException();
+    }
+  }
+
+  @override
+  Future<Unit> clearCacheUserData() async {
+    await sharedPreferences.remove(cachedUserData);
+    return Future.value(unit);
+  }
+
+  @override
+  Future<Unit> cacheCurrentUserData(UserModel userDataModel) async {
+    await sharedPreferences.setString(
+        cachedCurrentUserData, json.encode(userDataModel));
+    return Future.value(unit);
+  }
+}
