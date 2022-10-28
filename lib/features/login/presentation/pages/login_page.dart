@@ -1,3 +1,5 @@
+import 'package:clean_app_sample/features/home/presentation/pages/home.dart';
+import 'package:clean_app_sample/features/login/data/datasources/login_local_data_source.dart';
 import 'package:clean_app_sample/features/login/presentation/bloc/login_bloc.dart';
 import 'package:clean_app_sample/features/login/presentation/dto/dto.dart';
 import 'package:clean_app_sample/features/login/presentation/widgets/loading_widget.dart';
@@ -59,10 +61,13 @@ class _LoginPageState extends State<LoginPage> {
             final snackBar = SnackBar(content: Text(state.message));
             // ignore: deprecated_member_use
             Scaffold.of(context).showSnackBar(snackBar);
-          } else if (state is LoggedState) {
-            final snackBar = SnackBar(content: Text('User logged...'));
-            // ignore: deprecated_member_use
-            Scaffold.of(context).showSnackBar(snackBar);
+          } else if (state is LoadedLoginState) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute<void>(
+                builder: (BuildContext context) => const HomePage(),
+              ),
+            );
           }
         },
       ),
@@ -101,27 +106,34 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       height: 40.0,
                       child: TextFormField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            labelStyle: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black,
-                            ),
-                            hintText: 'Enter the username',
-                            labelText: 'Email',
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          onChanged: (value) {
-                            inputLogin = value;
-                          },
-                          onSaved: (value) {
-                            // This optional block of code can be used to run
-                            // code when the user saves the form.
-                          },
-                          validator: (value) => EmailValidator.validate(value!)
-                              ? null
-                              : "Enter valid Email "),
+                          labelStyle: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                          ),
+                          hintText: 'Enter the username',
+                          labelText: 'Email',
+                        ),
+                        onChanged: (value) {
+                          inputLogin = value;
+                        },
+                        onSaved: (value) {
+                          // This optional block of code can be used to run
+                          // code when the user saves the form.
+                        },
+                        // validator: (value) => EmailValidator.validate(value!)
+                        //     ? null
+                        //     : "Enter valid Email ",
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'username is mandatory';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
                     SizedBox(
                       height: 30.0,

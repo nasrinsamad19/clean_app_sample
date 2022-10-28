@@ -7,7 +7,7 @@ import 'package:dartz/dartz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class LoginLocalDataSources {
-  Future<SignInModel> getCachedUserData();
+  Future<UserModel> getCachedUserData();
 
   Future<Unit> cacheUserData(UserModel loginModel);
 
@@ -28,10 +28,10 @@ class LoginLocalDataSourcesRepoImpl implements LoginLocalDataSources {
   }
 
   @override
-  Future<SignInModel> getCachedUserData() {
+  Future<UserModel> getCachedUserData() {
     final jsonString = sharedPreferences.getString(cachedUserData);
     if (jsonString != null) {
-      SignInModel loginModel = SignInModel.fromJson(json.decode(jsonString));
+      UserModel loginModel = UserModel.fromJson(json.decode(jsonString));
       return Future.value(loginModel);
     } else {
       throw EmptyCacheException();

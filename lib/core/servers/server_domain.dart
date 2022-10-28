@@ -1,5 +1,5 @@
 /// Server Domain for User Management Service
-const userUrl = "https://staging.parking.ldcs.ae";
+const userUrl = "https://stagging.support.api.ldcs.ae/api";
 
 ///shared preference keys
 

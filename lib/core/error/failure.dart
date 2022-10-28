@@ -25,3 +25,5 @@ class InvalidCredentials extends Failure {}
 class UnauthorizedFailure extends Failure {}
 
 class ReLoginFailure extends Failure {}
+
+class UnHandledFailure extends Failure {}

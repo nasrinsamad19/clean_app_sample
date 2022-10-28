@@ -10,6 +10,11 @@ import 'package:clean_app_sample/features/sign_in/data/repo/signIn_repo_impl.dar
 import 'package:clean_app_sample/features/sign_in/domain/repo/sign_in_repo.dart';
 import 'package:clean_app_sample/features/sign_in/domain/usecases/sign_in_usecase.dart';
 import 'package:clean_app_sample/features/sign_in/presentaion/bloc/sign_in_bloc.dart';
+import 'package:clean_app_sample/features/users/data/datasource/users_remote_datasources.dart';
+import 'package:clean_app_sample/features/users/data/repo/users_repo_impl.dart';
+import 'package:clean_app_sample/features/users/domain/repo/users_repo.dart';
+import 'package:clean_app_sample/features/users/domain/usecases/get_users.dart';
+import 'package:clean_app_sample/features/users/presentation/bloc/users_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,8 +50,8 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerLazySingleton<SignInRepositories>(
-      () => SignInRepoImp(signInRemoteDataSource: sl(), networkInfo: sl()));
+  // sl.registerLazySingleton<SignInRepositories>(
+  //     () => SignInRepoImp(signInRemoteDataSource: sl(), networkInfo: sl()));
 
   /// DataSources
   sl.registerLazySingleton<LogInRemoteDataSources>(
@@ -59,11 +64,11 @@ Future<void> init() async {
       sharedPreferences: sl(),
     ),
   );
-  sl.registerLazySingleton<SignInRemoteDataSource>(
-    () => SignInRemoteDataSourceImpl(
-      client: sl(),
-    ),
-  );
+  // sl.registerLazySingleton<SignInRemoteDataSource>(
+  //   () => SignInRemoteDataSourceImpl(
+  //     client: sl(),
+  //   ),
+  // );
   ///////////////////////////////////  global  /////////////////////////////////////
   /// External
   final sharedPreferences = await SharedPreferences.getInstance();
@@ -79,6 +84,27 @@ Future<void> init() async {
   sl.registerLazySingleton<NetworkInfo>(
     () => NetworkInfoImpl(
       sl(),
+    ),
+  );
+
+  ///////////////////////////////////  Users /////////////////////////////////////
+  /// Bloc
+  sl.registerFactory(() => UsersBloc(getUsersUseCase: sl()));
+
+  /// UseCases
+  sl.registerLazySingleton(() => GetUsersUseCase(usersRepositories: sl()));
+
+  /// Repository
+  sl.registerLazySingleton<UsersRepositories>(() => UsersRepoImpl(
+      networkInfo: sl(),
+      usersRemoteDataSources: sl(),
+      loginLocalDataSources: sl(),
+      logInRemoteDataSources: sl()));
+
+  /// DataSources
+  sl.registerLazySingleton<UsersRemoteDataSources>(
+    () => UsersRemoteDataSourcesImpl(
+      client: sl(),
     ),
   );
 }
