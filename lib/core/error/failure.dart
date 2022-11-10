@@ -27,3 +27,17 @@ class UnauthorizedFailure extends Failure {}
 class ReLoginFailure extends Failure {}
 
 class UnHandledFailure extends Failure {}
+
+class EmptyCacheFailure extends Failure {}
+
+class EmailAlreadyExistFailure extends Failure {}
+
+class UsernameAlreadyExistFailure extends Failure {}
+
+class PhoneAlreadyExistFailure extends Failure {}
+
+class IncorrectCodeFailure extends Failure {}
+
+class EmailTokenFailure extends Failure {}
+
+class IncorrectPasswordFailure extends Failure {}

@@ -58,10 +58,10 @@ class LogInRemoteDataSourcesImpl implements LogInRemoteDataSources {
     };
     final mBody = jsonEncode({"refreshToken": refreshToken});
     final response = await client.post(
-        Uri.parse("$userUrl/api/user/auth/refresh-token"),
+        Uri.parse("$userUrl/user/auth/refresh-token"),
         headers: headers,
         body: mBody);
-    debugPrint('POST | $userUrl/api/user/auth/refresh-token');
+    debugPrint('POST | $userUrl/user/auth/refresh-token');
 
     debugPrint('${response.statusCode} | ${response.body}');
     if (response.statusCode == 200) {

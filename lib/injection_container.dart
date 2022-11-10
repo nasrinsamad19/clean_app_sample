@@ -5,6 +5,21 @@ import 'package:clean_app_sample/features/login/data/repo/login_repo_iml.dart';
 import 'package:clean_app_sample/features/login/domain/repo/login_repo.dart';
 import 'package:clean_app_sample/features/login/domain/usecases/login_usecase.dart';
 import 'package:clean_app_sample/features/login/presentation/bloc/login_bloc.dart';
+import 'package:clean_app_sample/features/profile/data/datasources/profile_remote_datasources.dart';
+import 'package:clean_app_sample/features/profile/data/repo/profile_repository_imp.dart';
+import 'package:clean_app_sample/features/profile/domain/repositories/profile_repository.dart';
+import 'package:clean_app_sample/features/profile/domain/usecases/get_profile_use_case.dart';
+import 'package:clean_app_sample/features/profile/domain/usecases/update_email.dart';
+import 'package:clean_app_sample/features/profile/domain/usecases/update_email_by_code.dart';
+import 'package:clean_app_sample/features/profile/domain/usecases/update_image_use_case.dart';
+import 'package:clean_app_sample/features/profile/domain/usecases/update_password_use_case.dart';
+import 'package:clean_app_sample/features/profile/domain/usecases/update_profile_info_use_case.dart';
+import 'package:clean_app_sample/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
+import 'package:clean_app_sample/features/profile/presentation/bloc/update_email/update_email_bloc.dart';
+import 'package:clean_app_sample/features/profile/presentation/bloc/update_email_by_code/update_email_by_code_bloc.dart';
+import 'package:clean_app_sample/features/profile/presentation/bloc/update_image/update_image_bloc.dart';
+import 'package:clean_app_sample/features/profile/presentation/bloc/update_password/update_password_bloc.dart';
+import 'package:clean_app_sample/features/profile/presentation/bloc/update_profile_bloc/update_profile_bloc.dart';
 import 'package:clean_app_sample/features/sign_in/data/datasources/sign_in_remote_datasources.dart';
 import 'package:clean_app_sample/features/sign_in/data/repo/signIn_repo_impl.dart';
 import 'package:clean_app_sample/features/sign_in/domain/repo/sign_in_repo.dart';
@@ -105,6 +120,46 @@ Future<void> init() async {
   sl.registerLazySingleton<UsersRemoteDataSources>(
     () => UsersRemoteDataSourcesImpl(
       client: sl(),
+    ),
+  );
+  ////////////////////////////////////////////// Profile Bloc's //////////////////////////////////////
+  /// Bloc
+  sl.registerFactory(() => ProfileBloc(sl()));
+  sl.registerFactory(() => UpdateProfileBloc(sl()));
+  sl.registerFactory(() => UpdateImageBloc(sl()));
+
+  sl.registerFactory(() => UpdatePasswordBloc(sl()));
+
+  sl.registerFactory(() => UpdateEmailBloc(sl()));
+  sl.registerFactory(() => UpdateEmailByCodeBloc(sl()));
+
+  /// UseCases
+  sl.registerLazySingleton(
+    () => GetProfileUseCase(sl()),
+  );
+  sl.registerLazySingleton(
+    () => UpdateProfileInfoUseCase(sl()),
+  );
+  sl.registerLazySingleton(() => UpdateProfileImageUseCase(sl()));
+  sl.registerLazySingleton(
+    () => UpdatePasswordUseCase(sl()),
+  );
+  sl.registerLazySingleton(
+    () => UpdateEmailUseCase(sl()),
+  );
+  sl.registerLazySingleton(
+    () => UpdateEmailByCode(sl()),
+  );
+
+  /// Repository
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImp(sl(), sl(), sl(), sl()),
+  );
+
+  /// DataSources
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+    () => ProfileRemoteDataSourceImp(
+      sl(),
     ),
   );
 }
