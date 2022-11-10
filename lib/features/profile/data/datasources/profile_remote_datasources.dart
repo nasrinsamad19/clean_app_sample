@@ -160,8 +160,7 @@ class ProfileRemoteDataSourceImp extends ProfileRemoteDataSource {
       'Authorization': 'token $token',
     }, body: {
       "phone": profile.phone,
-      "email": profile.email,
-      "username": profile.username
+      "username": profile.username,
     });
     if (response.statusCode == 200) {
       return Future.value(unit);

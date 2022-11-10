@@ -21,6 +21,11 @@ class _UpdateEmailWidgetState extends State<UpdateEmailWidget> {
   var oldPasswordData;
   var newPasswordData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +34,8 @@ class _UpdateEmailWidgetState extends State<UpdateEmailWidget> {
         child: CommonAppbar(),
         preferredSize: Size.fromHeight(height(context) * .06),
       ),
-      body: BlocBuilder<UpdateEmailBloc, UpdateEmailState>(
+      body: BlocConsumer<UpdateEmailBloc, UpdateEmailState>(
+        listener: (context, state) => {},
         builder: (context, state) {
           print("state is $state");
           if (state is UpdateEmailInitial) {
@@ -41,22 +47,7 @@ class _UpdateEmailWidgetState extends State<UpdateEmailWidget> {
 
           if (state is SuccessUpdateEmailState) {
             var emailToken = state.emailToken;
-            return BlocBuilder<UpdateEmailByCodeBloc, UpdateEmailByCodeState>(
-              builder: (context, state) {
-                print("state is $state");
-                if (state is UpdateEmailByCodeInitial) {
-                  return _buildCodebody(context, emailToken);
-                }
-                if (state is ErrorUpdateEmailByCodeState) {
-                  return Center(child: Text(state.message));
-                }
-
-                if (state is SuccessUpdateEmailByCodeState) {
-                  return showAlertDialogForEmail(context, state);
-                }
-                return const Center(child: CircularProgressIndicator());
-              },
-            );
+            return _buildCodebody(context, emailToken);
           }
           return const Center(child: CircularProgressIndicator());
         },
@@ -65,99 +56,136 @@ class _UpdateEmailWidgetState extends State<UpdateEmailWidget> {
   }
 
   _buildCodebody(BuildContext context, String emailToken) {
-    return Padding(
-        padding: EdgeInsets.all(30),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.only(left: 20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  // border: Border.all(
-                  //     //color: Color.fromARGB(255, 192, 190, 190)),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(
-                      15,
-                    ),
-                  ),
-
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(
-                        0.1,
-                      ),
-                      spreadRadius: 1,
-                      blurRadius: 2,
-                      offset: const Offset(0, 1), // changes position of shadow
-                    ),
-                  ],
-                ),
-                child: TextFormField(
-                  controller: code,
-                  autofillHints: [AutofillHints.oneTimeCode],
-                  //onEditingComplete: ()=>TextInput.finishAutofillContext(),
-                  keyboardType: TextInputType.number,
-                  maxLength: 6,
-
-                  decoration: InputDecoration(
-                      counterText: '',
-                      border: InputBorder.none,
-                      labelStyle:
-                          TextStyle(color: MyColors.lightFont, fontSize: 13),
-                      labelText: 'OTP'),
-
-                  onChanged: (value) {},
-                  onSaved: (value) {
-                    newPasswordData = value;
-                  },
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter New Password';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Column(children: [
+    return BlocBuilder<UpdateEmailByCodeBloc, UpdateEmailByCodeState>(
+      builder: (context, state) {
+        print("state is $state");
+        if (state is UpdateEmailByCodeInitial) {
+          return Padding(
+              padding: EdgeInsets.all(30),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
                     Container(
-                      width: width(context),
+                      padding: EdgeInsets.only(left: 20),
                       decoration: BoxDecoration(
-                        color: MyColors.blue,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20),
+                        color: Colors.white,
+                        // border: Border.all(
+                        //     //color: Color.fromARGB(255, 192, 190, 190)),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(
+                            15,
+                          ),
                         ),
-                      ),
-                      //margin: EdgeInsets.all(25),
-                      child: FlatButton(
-                        child: Text(
-                          'Confirm',
-                          style: TextStyle(fontSize: 20.0),
-                        ),
-                        textColor: MyColors.white,
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
 
-                            BlocProvider.of<UpdateEmailByCodeBloc>(context).add(
-                                UpdateEmailByCodeProfileEvent(
-                                    code: code.text,
-                                    emailToken: emailToken,
-                                    context: context));
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(
+                              0.1,
+                            ),
+                            spreadRadius: 1,
+                            blurRadius: 2,
+                            offset: const Offset(
+                                0, 1), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: TextFormField(
+                        controller: code,
+                        autofillHints: [AutofillHints.oneTimeCode],
+                        //onEditingComplete: ()=>TextInput.finishAutofillContext(),
+                        keyboardType: TextInputType.number,
+                        maxLength: 6,
+
+                        decoration: InputDecoration(
+                            counterText: '',
+                            border: InputBorder.none,
+                            labelStyle: TextStyle(
+                                color: MyColors.lightFont, fontSize: 13),
+                            labelText: 'OTP'),
+
+                        onChanged: (value) {},
+                        onSaved: (value) {
+                          newPasswordData = value;
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter New Password';
                           }
+                          return null;
                         },
                       ),
                     ),
-                  ]))
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Column(children: [
+                          Container(
+                            width: width(context),
+                            decoration: BoxDecoration(
+                              color: MyColors.blue,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(20),
+                              ),
+                            ),
+                            //margin: EdgeInsets.all(25),
+                            child: FlatButton(
+                              child: Text(
+                                'Confirm',
+                                style: TextStyle(fontSize: 20.0),
+                              ),
+                              textColor: MyColors.white,
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  _formKey.currentState!.save();
+
+                                  BlocProvider.of<UpdateEmailByCodeBloc>(
+                                          context)
+                                      .add(UpdateEmailByCodeProfileEvent(
+                                          code: code.text,
+                                          emailToken: emailToken,
+                                          context: context));
+                                }
+                              },
+                            ),
+                          ),
+                        ]))
+                  ],
+                ),
+              ));
+        }
+        if (state is ErrorUpdateEmailByCodeState) {
+          return AlertDialog(
+            title: Text(state.message),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
             ],
-          ),
-        ));
+          );
+        }
+
+        if (state is SuccessUpdateEmailByCodeState) {
+          return AlertDialog(
+            title: Text(state.message),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
   }
 
   _buildEmailbody() {
@@ -214,52 +242,6 @@ class _UpdateEmailWidgetState extends State<UpdateEmailWidget> {
               SizedBox(
                 height: 5,
               ),
-              // Container(
-              //   padding: EdgeInsets.only(left: 20),
-              //   decoration: BoxDecoration(
-              //     color: Colors.white,
-              //     // border: Border.all(
-              //     //     //color: Color.fromARGB(255, 192, 190, 190)),
-              //     borderRadius: const BorderRadius.all(
-              //       Radius.circular(
-              //         15,
-              //       ),
-              //     ),
-
-              //     boxShadow: [
-              //       BoxShadow(
-              //         color: Colors.black.withOpacity(
-              //           0.1,
-              //         ),
-              //         spreadRadius: 1,
-              //         blurRadius: 2,
-              //         offset:
-              //             const Offset(0, 1), // changes position of shadow
-              //       ),
-              //     ],
-              //   ),
-              //   child: TextFormField(
-              //     controller: code,
-              //     autofillHints: [AutofillHints.email],
-              //     //onEditingComplete: ()=>TextInput.finishAutofillContext(),
-              //     decoration: InputDecoration(
-              //         border: InputBorder.none,
-              //         labelStyle:
-              //             TextStyle(color: MyColors.lightFont, fontSize: 13),
-              //         labelText: 'OTP'),
-
-              //     onChanged: (value) {},
-              //     onSaved: (value) {
-              //       newPasswordData = value;
-              //     },
-              //     validator: (value) {
-              //       if (value!.isEmpty) {
-              //         return 'Please enter New Password';
-              //       }
-              //       return null;
-              //     },
-              //   ),
-              // ),
               SizedBox(
                 height: 50,
               ),

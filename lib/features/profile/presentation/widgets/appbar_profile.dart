@@ -49,7 +49,7 @@ class _ProfileAppbarState extends State<ProfileAppbar> {
           return const Center(child: CircularProgressIndicator());
         }
         if (state is ErrorGetProfileState) {
-          return const Center(child: Text('Error'));
+          return Center(child: Text(state.message));
         }
 
         if (state is SuccessGetProfileState) {
@@ -60,89 +60,88 @@ class _ProfileAppbarState extends State<ProfileAppbar> {
           }
 
           return Container(
-            //color: Colors.red,
             height: height(context) / 3,
             child: Stack(
               fit: StackFit.loose,
               children: [
                 Container(
-                  padding: EdgeInsets.only(left: 30, right: 30),
-                  height: height(context) / 4.5,
-                  decoration: BoxDecoration(
-                    color: MyColors.blue,
-                    // border: Border.all(
-                    //     //color: Color.fromARGB(255, 192, 190, 190)),
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(
-                        30,
+                    padding: EdgeInsets.only(left: 30, right: 30),
+                    height: height(context) / 4.5,
+                    decoration: BoxDecoration(
+                      color: MyColors.blue,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(
+                          30,
+                        ),
+                        bottomRight: Radius.circular(
+                          30,
+                        ),
                       ),
-                      bottomRight: Radius.circular(
-                        30,
-                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(
+                            0.1,
+                          ),
+                          spreadRadius: 3,
+                          blurRadius: 4,
+                          offset:
+                              const Offset(0, 0), // changes position of shadow
+                        ),
+                      ],
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(
-                          0.1,
-                        ),
-                        spreadRadius: 3,
-                        blurRadius: 4,
-                        offset:
-                            const Offset(0, 0), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    crossAxisAlignment: widget.isEdit
-                        ? CrossAxisAlignment.center
-                        : CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Image.asset(
-                          '${Constants.imgPath}back_arrow.png',
-                        ),
-                      ),
-                      Spacer(),
-                      Text(
-                        !widget.isEdit ? 'Profile' : 'Edit Profile',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Spacer(),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute<void>(
-                                builder: (BuildContext context) =>
-                                    const ProfileEditPage(),
-                              ));
-                        },
-                        behavior: HitTestBehavior.translucent,
-                        child: !widget.isEdit
-                            ? Container(
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.white,
+                    child: Positioned(
+                      top: -70,
+                      child: Row(
+                        // crossAxisAlignment: widget.isEdit
+                        //     ? CrossAxisAlignment.start
+                        //     : CrossAxisAlignment.center,
+                        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Image.asset(
+                              '${Constants.imgPath}back_arrow.png',
+                            ),
+                          ),
+                          Spacer(),
+                          Text(
+                            !widget.isEdit ? 'Profile' : 'Edit Profile',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute<void>(
+                                    builder: (BuildContext context) =>
+                                        const ProfileEditPage(),
+                                  ));
+                            },
+                            behavior: HitTestBehavior.translucent,
+                            child: !widget.isEdit
+                                ? Container(
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: Colors.white,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20))),
+                                    child: Image.asset(
+                                      '${Constants.imgPath}edit.png',
                                     ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20))),
-                                child: Image.asset(
-                                  '${Constants.imgPath}edit.png',
-                                ),
-                              )
-                            : Container(),
-                      )
-                    ],
-                  ),
-                ),
+                                  )
+                                : Container(),
+                          )
+                        ],
+                      ),
+                    )),
                 Positioned(
                   bottom: 0,
                   left: 30,

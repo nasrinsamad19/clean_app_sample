@@ -25,7 +25,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   var userIamge;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var usernameController;
-  var emailController;
+  var comapnyName;
 
   @override
   initState() {
@@ -51,7 +51,10 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             return const Center(child: CircularProgressIndicator());
           }
           if (state is ErrorGetProfileState) {
-            return const Center(child: Text('Error'));
+            return Center(
+                child: AlertDialog(
+              title: Text(state.message),
+            ));
           }
 
           if (state is SuccessGetProfileState) {
@@ -87,8 +90,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                   padding: EdgeInsets.only(left: 20),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    // border: Border.all(
-                    //     //color: Color.fromARGB(255, 192, 190, 190)),
                     borderRadius: const BorderRadius.all(
                       Radius.circular(
                         15,
@@ -107,10 +108,8 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                     ],
                   ),
                   child: TextFormField(
-                    //controller: usernameController,
                     initialValue: state.profile.username,
                     autofillHints: [AutofillHints.username],
-                    //onEditingComplete: ()=>TextInput.finishAutofillContext(),
                     decoration: InputDecoration(
                         hintText: state.profile.username,
                         border: InputBorder.none,
@@ -121,7 +120,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                         labelStyle:
                             TextStyle(color: MyColors.lightFont, fontSize: 13),
                         labelText: 'Username'),
-
                     onChanged: (value) {
                       value == usernameController;
                     },
@@ -143,111 +141,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                   padding: EdgeInsets.only(left: 20),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    // border: Border.all(
-                    //     //color: Color.fromARGB(255, 192, 190, 190)),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(
-                        15,
-                      ),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(
-                          0.1,
-                        ),
-                        spreadRadius: 1,
-                        blurRadius: 2,
-                        offset:
-                            const Offset(0, 1), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: TextFormField(
-                    controller:
-                        TextEditingController(text: state.profile.email),
-                    autofillHints: [AutofillHints.email],
-                    //onEditingComplete: ()=>TextInput.finishAutofillContext(),
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        icon: Image.asset(
-                          '${Constants.imgPath}email.png',
-                          scale: 1.8,
-                        ),
-                        labelStyle:
-                            TextStyle(color: MyColors.lightFont, fontSize: 13),
-                        labelText: 'Email'),
-
-                    onChanged: (value) {},
-                    onSaved: (value) {
-                      emailController = value;
-                    },
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter Email';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Container(
-                  padding: EdgeInsets.only(left: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    // border: Border.all(
-                    //     //color: Color.fromARGB(255, 192, 190, 190)),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(
-                        15,
-                      ),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(
-                          0.1,
-                        ),
-                        spreadRadius: 1,
-                        blurRadius: 2,
-                        offset:
-                            const Offset(0, 1), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: TextFormField(
-                    controller: TextEditingController(text: '***********'),
-
-                    autofillHints: [AutofillHints.email],
-                    //onEditingComplete: ()=>TextInput.finishAutofillContext(),
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        icon: Image.asset(
-                          '${Constants.imgPath}password.png',
-                          scale: 1.8,
-                        ),
-                        labelStyle:
-                            TextStyle(color: MyColors.lightFont, fontSize: 13),
-                        labelText: 'Password'),
-
-                    onChanged: (value) {},
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter Password';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Container(
-                  padding: EdgeInsets.only(left: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    // border: Border.all(
-                    //     //color: Color.fromARGB(255, 192, 190, 190)),
                     borderRadius: const BorderRadius.all(
                       Radius.circular(
                         10,
@@ -266,10 +159,9 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                     ],
                   ),
                   child: TextFormField(
-                    controller:
-                        TextEditingController(text: state.profile.phone),
+                    initialValue: state.profile.phone,
                     autofillHints: [AutofillHints.email],
-                    //onEditingComplete: ()=>TextInput.finishAutofillContext(),
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         icon: Image.asset(
@@ -279,8 +171,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                         labelStyle:
                             TextStyle(color: MyColors.lightFont, fontSize: 13),
                         labelText: 'Phone'),
-
-                    onChanged: (value) {},
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter Phone Number';
@@ -320,10 +210,8 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                     ],
                   ),
                   child: TextFormField(
-                    controller:
-                        TextEditingController(text: state.profile.companyName),
+                    initialValue: state.profile.companyName,
                     autofillHints: [AutofillHints.email],
-                    //onEditingComplete: ()=>TextInput.finishAutofillContext(),
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         icon: Image.asset(
@@ -333,9 +221,10 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                         labelStyle:
                             TextStyle(color: MyColors.lightFont, fontSize: 13),
                         labelText: 'Company'),
-
                     onChanged: (value) {},
-                    onSaved: (value) {},
+                    onSaved: (value) {
+                      comapnyName = value;
+                    },
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter Company';
@@ -372,15 +261,59 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                                 var data = Profile(
                                     username: usernameController,
                                     phone: phoneController,
-                                    email: emailController,
+                                    email: state.profile.email,
                                     image: state.profile.image,
                                     userType: state.profile.userType,
                                     userTypeId: state.profile.userTypeId,
                                     companyId: state.profile.companyId,
-                                    companyName: state.profile.companyName);
+                                    companyName: comapnyName);
                                 BlocProvider.of<UpdateProfileBloc>(context).add(
                                     UpdateProfileInfoEvent(
                                         profile: data, context: context));
+                                BlocConsumer<UpdateProfileBloc,
+                                    UpdateProfileState>(
+                                  listener: (context, state) {
+                                    if (state is UpdateProfileInitial) {
+                                      CircularProgressIndicator();
+                                    } else if (state
+                                        is LoadingUpdateProfileInfoState) {
+                                      const CircularProgressIndicator();
+                                    } else if (state
+                                        is ErrorUpdateProfileInfoState) {
+                                      Center(
+                                          child: AlertDialog(
+                                        title: Text(state.message),
+                                      ));
+                                    } else if (state
+                                        is SuccessUpdateProfileInfoState) {
+                                      Center(
+                                          child: AlertDialog(
+                                        title: Text(state.message),
+                                      ));
+                                    }
+                                  },
+                                  builder: (context, state) {
+                                    if (state is UpdateProfileInitial) {
+                                      return CircularProgressIndicator();
+                                    } else if (state
+                                        is LoadingUpdateProfileInfoState) {
+                                      return const CircularProgressIndicator();
+                                    } else if (state
+                                        is ErrorUpdateProfileInfoState) {
+                                      return Center(
+                                          child: AlertDialog(
+                                        title: Text(state.message),
+                                      ));
+                                    } else if (state
+                                        is SuccessUpdateProfileInfoState) {
+                                      return Center(
+                                          child: AlertDialog(
+                                        title: Text(state.message),
+                                      ));
+                                    }
+                                    return CircularProgressIndicator();
+                                  },
+                                );
                               }
                             },
                           ),
@@ -404,7 +337,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                             ),
                             textColor: Colors.white,
                             onPressed: () {
-                              Navigator.pushReplacement(
+                              Navigator.push(
                                   context,
                                   MaterialPageRoute<void>(
                                     builder: (BuildContext context) =>
@@ -432,7 +365,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                             ),
                             textColor: Colors.white,
                             onPressed: () {
-                              Navigator.pushReplacement(
+                              Navigator.push(
                                   context,
                                   MaterialPageRoute<void>(
                                     builder: (BuildContext context) =>
@@ -440,7 +373,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                                   ));
                             },
                           ),
-                        )
+                        ),
                       ],
                     ))
               ],
