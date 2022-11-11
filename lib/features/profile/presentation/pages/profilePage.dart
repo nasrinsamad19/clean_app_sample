@@ -49,11 +49,9 @@ class _ProfilePageState extends State<ProfilePage> {
               return const Center(
                 child: Text("No Profile"),
               );
+            } else {
+              return _buildBody(context, state);
             }
-
-            userIamge = state.profile.image;
-
-            return _buildBody(context, state);
           }
           return const Center(child: CircularProgressIndicator());
         },

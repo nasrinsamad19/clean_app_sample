@@ -14,7 +14,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileEditPage extends StatefulWidget {
-  const ProfileEditPage({Key? key}) : super(key: key);
+  final Profile profile;
+  const ProfileEditPage({Key? key, required this.profile}) : super(key: key);
 
   @override
   State<ProfileEditPage> createState() => _ProfileEditPageState();
@@ -28,56 +29,62 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   var comapnyName;
 
   @override
-  initState() {
-    super.initState();
-    BlocProvider.of<ProfileBloc>(
-      context,
-    ).add(GetProfileEvent(context: context));
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MyColors.white,
-      appBar: PreferredSize(
-          child: ProfileAppbar(
-            isEdit: true,
+        backgroundColor: MyColors.white,
+        appBar: PreferredSize(
+            child: ProfileAppbar(
+              isEdit: true,
+            ),
+            preferredSize: Size.fromHeight(height(context) / 3.5)),
+        body: SingleChildScrollView(
+          child: Stack(
+            children: [
+              _buildBody(context),
+              BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
+                builder: (context, state) {
+                  print("state is $state");
+                  if (state is UpdateProfileInitial) {
+                    return Container();
+                  }
+                  if (state is ErrorUpdateProfileInfoState) {
+                    return Center(
+                        child: AlertDialog(
+                      title: Text(state.message),
+                      actions: [
+                        TextButton(
+                          child: Text("OK"),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        )
+                      ],
+                    ));
+                  }
+
+                  if (state is SuccessUpdateProfileInfoState) {
+                    return Center(
+                        child: AlertDialog(
+                      title: Text(state.message),
+                      actions: [
+                        TextButton(
+                          child: Text("OK"),
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true).pop();
+                          },
+                        )
+                      ],
+                    ));
+                  }
+                  return Container();
+                },
+              )
+            ],
           ),
-          preferredSize: Size.fromHeight(height(context) / 3.5)),
-      body: BlocBuilder<ProfileBloc, ProfileState>(
-        builder: (context, state) {
-          print("state is $state");
-          if (state is ProfileInitial) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is ErrorGetProfileState) {
-            return Center(
-                child: AlertDialog(
-              title: Text(state.message),
-            ));
-          }
-
-          if (state is SuccessGetProfileState) {
-            if (state.profile.username.isEmpty) {
-              return const Center(
-                child: Text("No Profile"),
-              );
-            }
-
-            userIamge = state.profile.image;
-            return _buildBody(context, state);
-          }
-
-          return const Center(child: CircularProgressIndicator());
-        },
-      ),
-    );
+        ));
   }
 
-  Widget _buildBody(BuildContext context, SuccessGetProfileState state) {
-    userIamge = state.profile.image;
-    ProfileModel profileModel;
-
+  Widget _buildBody(BuildContext context) {
     return Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -108,10 +115,10 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                     ],
                   ),
                   child: TextFormField(
-                    initialValue: state.profile.username,
+                    initialValue: widget.profile.username,
                     autofillHints: [AutofillHints.username],
                     decoration: InputDecoration(
-                        hintText: state.profile.username,
+                        hintText: widget.profile.username,
                         border: InputBorder.none,
                         icon: Image.asset(
                           '${Constants.imgPath}user.png',
@@ -159,7 +166,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                     ],
                   ),
                   child: TextFormField(
-                    initialValue: state.profile.phone,
+                    initialValue: widget.profile.phone,
                     autofillHints: [AutofillHints.email],
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
@@ -179,57 +186,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                     },
                     onSaved: (value) {
                       phoneController = value;
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Container(
-                  padding: EdgeInsets.only(left: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    // border: Border.all(
-                    //     //color: Color.fromARGB(255, 192, 190, 190)),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(
-                        15,
-                      ),
-                    ),
-
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(
-                          0.1,
-                        ),
-                        spreadRadius: 1,
-                        blurRadius: 2,
-                        offset:
-                            const Offset(0, 1), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: TextFormField(
-                    initialValue: state.profile.companyName,
-                    autofillHints: [AutofillHints.email],
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        icon: Image.asset(
-                          '${Constants.imgPath}company.png',
-                          scale: 1.8,
-                        ),
-                        labelStyle:
-                            TextStyle(color: MyColors.lightFont, fontSize: 13),
-                        labelText: 'Company'),
-                    onChanged: (value) {},
-                    onSaved: (value) {
-                      comapnyName = value;
-                    },
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter Company';
-                      }
-                      return null;
                     },
                   ),
                 ),
@@ -259,61 +215,18 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
                                 var data = Profile(
-                                    username: usernameController,
-                                    phone: phoneController,
-                                    email: state.profile.email,
-                                    image: state.profile.image,
-                                    userType: state.profile.userType,
-                                    userTypeId: state.profile.userTypeId,
-                                    companyId: state.profile.companyId,
-                                    companyName: comapnyName);
+                                  username: usernameController,
+                                  phone: phoneController,
+                                  email: widget.profile.email,
+                                  image: widget.profile.image,
+                                  userType: widget.profile.userType,
+                                  userTypeId: widget.profile.userTypeId,
+                                  companyId: widget.profile.companyId,
+                                  companyName: widget.profile.companyName,
+                                );
                                 BlocProvider.of<UpdateProfileBloc>(context).add(
                                     UpdateProfileInfoEvent(
                                         profile: data, context: context));
-                                BlocConsumer<UpdateProfileBloc,
-                                    UpdateProfileState>(
-                                  listener: (context, state) {
-                                    if (state is UpdateProfileInitial) {
-                                      CircularProgressIndicator();
-                                    } else if (state
-                                        is LoadingUpdateProfileInfoState) {
-                                      const CircularProgressIndicator();
-                                    } else if (state
-                                        is ErrorUpdateProfileInfoState) {
-                                      Center(
-                                          child: AlertDialog(
-                                        title: Text(state.message),
-                                      ));
-                                    } else if (state
-                                        is SuccessUpdateProfileInfoState) {
-                                      Center(
-                                          child: AlertDialog(
-                                        title: Text(state.message),
-                                      ));
-                                    }
-                                  },
-                                  builder: (context, state) {
-                                    if (state is UpdateProfileInitial) {
-                                      return CircularProgressIndicator();
-                                    } else if (state
-                                        is LoadingUpdateProfileInfoState) {
-                                      return const CircularProgressIndicator();
-                                    } else if (state
-                                        is ErrorUpdateProfileInfoState) {
-                                      return Center(
-                                          child: AlertDialog(
-                                        title: Text(state.message),
-                                      ));
-                                    } else if (state
-                                        is SuccessUpdateProfileInfoState) {
-                                      return Center(
-                                          child: AlertDialog(
-                                        title: Text(state.message),
-                                      ));
-                                    }
-                                    return CircularProgressIndicator();
-                                  },
-                                );
                               }
                             },
                           ),
