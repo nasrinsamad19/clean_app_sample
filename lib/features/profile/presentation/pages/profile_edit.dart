@@ -5,6 +5,7 @@ import 'package:clean_app_sample/features/profile/data/model/profile_model.dart'
 import 'package:clean_app_sample/features/profile/domain/entities/profile.dart';
 import 'package:clean_app_sample/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:clean_app_sample/features/profile/presentation/bloc/update_profile_bloc/update_profile_bloc.dart';
+import 'package:clean_app_sample/features/profile/presentation/widgets/alert.dart';
 import 'package:clean_app_sample/features/profile/presentation/widgets/appbar_profile.dart';
 import 'package:clean_app_sample/features/profile/presentation/widgets/password_change.dart';
 import 'package:clean_app_sample/features/profile/presentation/widgets/update_email.dart';
@@ -27,6 +28,12 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var usernameController;
   var comapnyName;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    BlocProvider.of<UpdateProfileBloc>(context).emit(UpdateProfileInitial());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,34 +54,19 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                   if (state is UpdateProfileInitial) {
                     return Container();
                   }
+                  if (state is LoadingUpdateProfileInfoState) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
                   if (state is ErrorUpdateProfileInfoState) {
                     return Center(
-                        child: AlertDialog(
-                      title: Text(state.message),
-                      actions: [
-                        TextButton(
-                          child: Text("OK"),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        )
-                      ],
-                    ));
+                        child: AlertMessage().alert(context, state.message));
                   }
 
                   if (state is SuccessUpdateProfileInfoState) {
                     return Center(
-                        child: AlertDialog(
-                      title: Text(state.message),
-                      actions: [
-                        TextButton(
-                          child: Text("OK"),
-                          onPressed: () {
-                            Navigator.of(context, rootNavigator: true).pop();
-                          },
-                        )
-                      ],
-                    ));
+                        child: AlertMessage().alert(context, state.message));
                   }
                   return Container();
                 },

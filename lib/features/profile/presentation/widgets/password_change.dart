@@ -1,6 +1,7 @@
 import 'package:clean_app_sample/core/material/colors.dart';
 import 'package:clean_app_sample/core/util/screen_constarints.dart';
 import 'package:clean_app_sample/features/profile/presentation/bloc/update_password/update_password_bloc.dart';
+import 'package:clean_app_sample/features/profile/presentation/widgets/alert.dart';
 import 'package:clean_app_sample/features/profile/presentation/widgets/common_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -20,6 +21,13 @@ class _PasswordChangeWidgetState extends State<PasswordChangeWidget> {
   var oldPasswordData;
   var newPasswordData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    BlocProvider.of<UpdatePasswordBloc>(context).emit(UpdatePasswordInitial());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,34 +42,18 @@ class _PasswordChangeWidgetState extends State<PasswordChangeWidget> {
           if (state is UpdatePasswordInitial) {
             return _buildBody();
           }
-          if (state is ErrorUpdatePasswordState) {
+          if (state is LoadingUpdatePasswordState) {
             return Center(
-                child: AlertDialog(
-              title: Text(state.message),
-              actions: [
-                TextButton(
-                  child: Text("OK"),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                )
-              ],
-            ));
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (state is ErrorUpdatePasswordState) {
+            return Center(child: AlertMessage().alert(context, state.message));
           }
 
           if (state is SuccessUpdatePasswordState) {
-            return Center(
-                child: AlertDialog(
-              title: Text(state.message),
-              actions: [
-                TextButton(
-                  child: Text("OK"),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                )
-              ],
-            ));
+            return Center(child: AlertMessage().alert(context, state.message));
           }
 
           return _buildBody();

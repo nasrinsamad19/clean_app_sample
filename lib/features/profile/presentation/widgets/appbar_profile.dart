@@ -9,6 +9,7 @@ import 'package:clean_app_sample/features/profile/data/model/profile_model.dart'
 import 'package:clean_app_sample/features/profile/domain/entities/profile.dart';
 import 'package:clean_app_sample/features/profile/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:clean_app_sample/features/profile/presentation/bloc/update_image/update_image_bloc.dart';
+import 'package:clean_app_sample/features/profile/presentation/pages/profilePage.dart';
 import 'package:clean_app_sample/features/profile/presentation/pages/profile_edit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ class ProfileAppbar extends StatefulWidget {
 class _ProfileAppbarState extends State<ProfileAppbar> {
   var profile;
   var imageFile;
+  XFile? image;
 
   @override
   void initState() {
@@ -52,6 +54,9 @@ class _ProfileAppbarState extends State<ProfileAppbar> {
         if (state is ErrorGetProfileState) {
           return Center(child: Text(state.message));
         }
+        if (state is LoadingGetProfileState) {
+          return Center(child: CircularProgressIndicator());
+        }
 
         if (state is SuccessGetProfileState) {
           if (state.profile.username.isEmpty) {
@@ -66,47 +71,55 @@ class _ProfileAppbarState extends State<ProfileAppbar> {
                 fit: StackFit.loose,
                 children: [
                   Container(
-                      padding: EdgeInsets.only(left: 30, right: 30),
-                      height: height(context) / 4.5,
-                      decoration: BoxDecoration(
-                        color: MyColors.blue,
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(
-                            30,
-                          ),
-                          bottomRight: Radius.circular(
-                            30,
-                          ),
+                    /// padding: EdgeInsets.only(left: 30, right: 30),
+                    height: height(context) / 4.5,
+                    decoration: BoxDecoration(
+                      color: MyColors.blue,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(
+                          30,
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(
-                              0.1,
-                            ),
-                            spreadRadius: 3,
-                            blurRadius: 4,
-                            offset: const Offset(
-                                0, 0), // changes position of shadow
-                          ),
-                        ],
+                        bottomRight: Radius.circular(
+                          30,
+                        ),
                       ),
-                      child: Positioned(
-                        top: -70,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(
+                            0.1,
+                          ),
+                          spreadRadius: 3,
+                          blurRadius: 4,
+                          offset:
+                              const Offset(0, 0), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                  ),
+                  Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        height: height(context) / 7,
+                        padding: !widget.isEdit
+                            ? EdgeInsets.only(top: 30, right: 30, left: 30)
+                            : EdgeInsets.only(top: 20, right: 30, left: 30),
                         child: Row(
-                          // crossAxisAlignment: widget.isEdit
-                          //     ? CrossAxisAlignment.start
-                          //     : CrossAxisAlignment.center,
-                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             GestureDetector(
                               onTap: () {
-                                Navigator.pop(context);
+                                widget.isEdit
+                                    ? Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                ProfilePage()))
+                                    : Navigator.pop(context);
                               },
                               child: Image.asset(
                                 '${Constants.imgPath}back_arrow.png',
                               ),
                             ),
-                            Spacer(),
                             Text(
                               !widget.isEdit ? 'Profile' : 'Edit Profile',
                               style: TextStyle(
@@ -114,7 +127,6 @@ class _ProfileAppbarState extends State<ProfileAppbar> {
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Spacer(),
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(
@@ -154,10 +166,15 @@ class _ProfileAppbarState extends State<ProfileAppbar> {
                       width: width(context) / 5.2,
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: NetworkImage(state.profile.image),
-                          )),
+                          image: imageFile == null
+                              ? DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: NetworkImage(state.profile.image),
+                                )
+                              : DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: FileImage(File(image!.path)),
+                                )),
                     ),
                   ),
                   widget.isEdit
@@ -209,9 +226,13 @@ class _ProfileAppbarState extends State<ProfileAppbar> {
     XFile? pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      imageFile = XFile(pickedFile.path);
-      BlocProvider.of<UpdateImageBloc>(context)
-          .add(UpdateProfileImageEvent(context: context, image: imageFile));
+      setState(() {
+        imageFile = XFile(pickedFile.path);
+        print(pickedFile.path);
+        image = XFile(pickedFile.path);
+        BlocProvider.of<UpdateImageBloc>(context)
+            .add(UpdateProfileImageEvent(context: context, image: imageFile));
+      });
     }
   }
 
@@ -221,6 +242,8 @@ class _ProfileAppbarState extends State<ProfileAppbar> {
     if (pickedFile != null) {
       setState(() {
         imageFile = XFile(pickedFile.path);
+        print(imageFile);
+        image = XFile(pickedFile.path);
         BlocProvider.of<UpdateImageBloc>(context)
             .add(UpdateProfileImageEvent(context: context, image: imageFile));
       });
@@ -247,7 +270,6 @@ class _ProfileAppbarState extends State<ProfileAppbar> {
 
     AlertDialog alert = AlertDialog(
       title: Text("Select Image From"),
-      //content: Text("This is my message."),
       actions: [cameraButton, galleryButton],
     );
 

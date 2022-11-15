@@ -43,6 +43,9 @@ class _ProfilePageState extends State<ProfilePage> {
           if (state is ErrorGetProfileState) {
             return Center(child: Text(state.message));
           }
+          if (state is LoadingGetProfileState) {
+            return Center(child: CircularProgressIndicator());
+          }
 
           if (state is SuccessGetProfileState) {
             if (state.profile.username.isEmpty) {
@@ -60,189 +63,191 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildBody(BuildContext context, SuccessGetProfileState state) {
-    return Stack(
-      children: [
-        Padding(
-          padding: EdgeInsets.only(left: 40, top: 40),
-          child: Column(
-            //mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                child: Row(
-                  children: [
-                    Image.asset(
-                      '${Constants.imgPath}user.png',
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Username',
-                          style: TextStyle(
-                              color: MyColors.lightFont, fontSize: 13),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          state.profile.username,
-                          style: TextStyle(
-                              color: MyColors.font,
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                  ],
+    return SingleChildScrollView(
+      child: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 40, top: 40),
+            child: Column(
+              //mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        '${Constants.imgPath}user.png',
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Username',
+                            style: TextStyle(
+                                color: MyColors.lightFont, fontSize: 13),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            state.profile.username,
+                            style: TextStyle(
+                                color: MyColors.font,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Container(
-                child: Row(
-                  children: [
-                    Image.asset(
-                      '${Constants.imgPath}email.png',
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Email',
-                          style: TextStyle(
-                              color: MyColors.lightFont, fontSize: 13),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          state.profile.email,
-                          style: TextStyle(
-                              color: MyColors.font,
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    )
-                  ],
+                SizedBox(
+                  height: 15,
                 ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Container(
-                child: Row(
-                  children: [
-                    Image.asset(
-                      '${Constants.imgPath}password.png',
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Password',
-                          style: TextStyle(
-                              color: MyColors.lightFont, fontSize: 13),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          '*******',
-                          style: TextStyle(
-                              color: MyColors.font,
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    )
-                  ],
+                Container(
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        '${Constants.imgPath}email.png',
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Email',
+                            style: TextStyle(
+                                color: MyColors.lightFont, fontSize: 13),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            state.profile.email,
+                            style: TextStyle(
+                                color: MyColors.font,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Container(
-                child: Row(
-                  children: [
-                    Image.asset(
-                      '${Constants.imgPath}phone.png',
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Phone',
-                          style: TextStyle(
-                              color: MyColors.lightFont, fontSize: 13),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          state.profile.phone,
-                          style: TextStyle(
-                              color: MyColors.font,
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    )
-                  ],
+                SizedBox(
+                  height: 15,
                 ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Container(
-                child: Row(
-                  children: [
-                    Image.asset(
-                      '${Constants.imgPath}company.png',
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Company',
-                          style: TextStyle(
-                              color: MyColors.lightFont, fontSize: 13),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          state.profile.companyName,
-                          style: TextStyle(
-                              color: MyColors.font,
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    )
-                  ],
+                Container(
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        '${Constants.imgPath}password.png',
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Password',
+                            style: TextStyle(
+                                color: MyColors.lightFont, fontSize: 13),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            '*******',
+                            style: TextStyle(
+                                color: MyColors.font,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              )
-            ],
+                SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        '${Constants.imgPath}phone.png',
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Phone',
+                            style: TextStyle(
+                                color: MyColors.lightFont, fontSize: 13),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            state.profile.phone,
+                            style: TextStyle(
+                                color: MyColors.font,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        '${Constants.imgPath}company.png',
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Company',
+                            style: TextStyle(
+                                color: MyColors.lightFont, fontSize: 13),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            state.profile.companyName,
+                            style: TextStyle(
+                                color: MyColors.font,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

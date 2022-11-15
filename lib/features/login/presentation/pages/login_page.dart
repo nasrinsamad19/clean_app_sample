@@ -3,6 +3,7 @@ import 'package:clean_app_sample/features/login/data/datasources/login_local_dat
 import 'package:clean_app_sample/features/login/presentation/bloc/login_bloc.dart';
 import 'package:clean_app_sample/features/login/presentation/dto/dto.dart';
 import 'package:clean_app_sample/features/login/presentation/widgets/loading_widget.dart';
+import 'package:clean_app_sample/features/profile/presentation/pages/profilePage.dart';
 import 'package:clean_app_sample/features/sign_in/presentaion/bloc/sign_in_bloc.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute<void>(
-                builder: (BuildContext context) => const HomePage(),
+                builder: (BuildContext context) => const ProfilePage(),
               ),
             );
           }

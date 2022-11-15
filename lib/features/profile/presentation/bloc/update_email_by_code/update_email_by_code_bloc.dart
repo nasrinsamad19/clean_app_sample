@@ -39,29 +39,29 @@ class UpdateEmailByCodeBloc
   String _mapFailureToMessage(Failure failure, BuildContext context) {
     switch (failure.runtimeType) {
       case ServerFailure:
-        return 'serverFailureError';
+        return 'server Failure';
       case EmptyCacheFailure:
-        return 'emptyCacheFailure';
+        return 'empty Cache';
       case OfflineFailure:
         return 'offline';
       case EmailAlreadyExistFailure:
-        return 'EmailAlreadyExistFailure';
+        return 'Email Already Exist';
       case PhoneAlreadyExistFailure:
-        return 'PhoneAlreadyExistFailure';
+        return 'Phone Already Exist';
       case UsernameAlreadyExistFailure:
-        return 'UsernameAlreadyExistFailure';
+        return 'Username Already Exist';
       case EmailTokenFailure:
-        return 'EmailTokenFailure';
+        return 'Email Token Expired';
       case IncorrectPasswordFailure:
-        return 'IncorrectPasswordFailure';
+        return 'Incorrect Password';
       case IncorrectCodeFailure:
-        return 'IncorrectCodeFailure';
+        return 'Incorrect Code';
       case ReLoginFailure:
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => SiginPage()));
-        return 'session';
+        return 'session Eroror';
       default:
-        return 'unexpectedError';
+        return 'unexpected Error';
     }
   }
 }

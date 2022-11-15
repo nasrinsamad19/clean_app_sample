@@ -2,6 +2,7 @@ import 'package:clean_app_sample/core/material/colors.dart';
 import 'package:clean_app_sample/core/util/screen_constarints.dart';
 import 'package:clean_app_sample/features/profile/presentation/bloc/update_email/update_email_bloc.dart';
 import 'package:clean_app_sample/features/profile/presentation/bloc/update_email_by_code/update_email_by_code_bloc.dart';
+import 'package:clean_app_sample/features/profile/presentation/widgets/alert.dart';
 import 'package:clean_app_sample/features/profile/presentation/widgets/common_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -25,6 +26,7 @@ class _UpdateEmailWidgetState extends State<UpdateEmailWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    BlocProvider.of<UpdateEmailBloc>(context).emit(UpdateEmailInitial());
   }
 
   @override
@@ -32,7 +34,7 @@ class _UpdateEmailWidgetState extends State<UpdateEmailWidget> {
     return Scaffold(
       appBar: PreferredSize(
         child: CommonAppbar(),
-        preferredSize: Size.fromHeight(height(context) * .06),
+        preferredSize: Size.fromHeight(height(context) / 5),
       ),
       body: BlocConsumer<UpdateEmailBloc, UpdateEmailState>(
         listener: (context, state) => {},
@@ -43,6 +45,9 @@ class _UpdateEmailWidgetState extends State<UpdateEmailWidget> {
           }
           if (state is ErrorUpdateEmailState) {
             return Center(child: Text(state.message));
+          }
+          if (state is LoadingUpdateEmailState) {
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (state is SuccessUpdateEmailState) {
@@ -157,31 +162,14 @@ class _UpdateEmailWidgetState extends State<UpdateEmailWidget> {
               ));
         }
         if (state is ErrorUpdateEmailByCodeState) {
-          return AlertDialog(
-            title: Text(state.message),
-            actions: [
-              TextButton(
-                child: Text("OK"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          );
+          return AlertMessage().alert(context, state.message);
+        }
+        if (state is LoadingUpdateEmailByCodeState) {
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (state is SuccessUpdateEmailByCodeState) {
-          return AlertDialog(
-            title: Text(state.message),
-            actions: [
-              TextButton(
-                child: Text("OK"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          );
+          return AlertMessage().alert(context, state.message);
         }
         return const Center(child: CircularProgressIndicator());
       },
@@ -278,33 +266,5 @@ class _UpdateEmailWidgetState extends State<UpdateEmailWidget> {
             ],
           ),
         ));
-  }
-
-  showAlertDialogForEmail(
-      BuildContext context, SuccessUpdateEmailByCodeState state) {
-    // set up the button
-    Widget cameraButton = TextButton(
-      child: Text("ok"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Message"),
-      content: Text(state.message),
-      actions: [
-        cameraButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
   }
 }
