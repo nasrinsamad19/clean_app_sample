@@ -59,11 +59,8 @@ class _MyAppState extends State<MyApp> {
           BlocProvider(create: (_) => di.sl<UpdateEmailByCodeBloc>())
         ],
         child: MaterialApp(
-          theme: ThemeData(
-              //primaryColor: Colors.green.shade800,
-              //accentColor: Colors.green.shade600,
-              ),
-          home: ProfilePage(),
+          theme: ThemeData(),
+          home: LoginPage(),
         ));
   }
 
