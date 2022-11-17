@@ -60,7 +60,7 @@ class _MyAppState extends State<MyApp> {
         ],
         child: MaterialApp(
           theme: ThemeData(),
-          home: ProfilePage(),
+          home: LoginPage(),
         ));
   }
 
