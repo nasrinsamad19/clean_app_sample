@@ -160,9 +160,9 @@ class _ProfileAppbarState extends State<ProfileAppbar> {
                   Stack(
                     children: [
                       Positioned(
-                        top: 90,
-                        left: 30,
-                        right: 30,
+                        top: height(context) * 0.13,
+                        left: width(context) * 0.34,
+                        right: width(context) * 0.34,
                         child: Container(
                           height: height(context) / 5.3,
                           width: width(context) / 5.2,
@@ -181,17 +181,17 @@ class _ProfileAppbarState extends State<ProfileAppbar> {
                       ),
                       widget.isEdit
                           ? Positioned(
-                              bottom: 24,
-                              left: 141,
-                              right: 141,
+                              bottom: width(context) * 0.082,
+                              left: width(context) * 0.342,
+                              right: width(context) * 0.342,
                               child: GestureDetector(
                                 behavior: HitTestBehavior.translucent,
                                 onTap: () {
                                   showAlertDialog(context);
                                 },
                                 child: Container(
-                                  height: height(context) / 9,
-                                  width: width(context) / 5.3,
+                                  height: height(context) / 10,
+                                  // width: width(context) / 5.2,
                                   decoration: BoxDecoration(
                                     //shape: BoxShape.circle,
                                     color: Colors.white.withOpacity(0.8),
