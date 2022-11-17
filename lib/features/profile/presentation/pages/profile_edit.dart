@@ -36,38 +36,35 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: MyColors.white,
+        backgroundColor: MyColors.greyBlue,
         appBar: PreferredSize(
             child: ProfileAppbar(
               isEdit: true,
             ),
-            preferredSize: Size.fromHeight(height(context) / 3.5)),
+            preferredSize: Size.fromHeight(height(context) / 3)),
         body: SingleChildScrollView(
           child: Stack(
             children: [
               _buildBody(context),
-              BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
-                builder: (context, state) {
-                  print("state is $state");
-                  if (state is UpdateProfileInitial) {
-                    return Container();
-                  }
-                  if (state is LoadingUpdateProfileInfoState) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
+              BlocConsumer<UpdateProfileBloc, UpdateProfileState>(
+                listener: (context, state) {
                   if (state is ErrorUpdateProfileInfoState) {
-                    return Center(
-                        child: AlertMessage().alert(context, state.message));
+                    AlertMessage().alert(context, state.message);
                   }
 
                   if (state is SuccessUpdateProfileInfoState) {
-                    return Center(
-                        child: AlertMessage().alert(context, state.message));
+                    AlertMessage().alert(context, state.message);
                   }
+                  if (state is LoadingUpdateProfileInfoState) {
+                    AlertMessage().loading(context);
+                  }
+                },
+                builder: (context, state) {
+                  print("state is $state");
+
                   return Container();
                 },
               )
@@ -81,7 +78,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         key: _formKey,
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(40),
+            padding: EdgeInsets.all(30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -188,96 +185,90 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                     alignment: Alignment.bottomCenter,
                     child: Column(
                       children: [
-                        Container(
-                          width: width(context),
-                          decoration: BoxDecoration(
-                            color: MyColors.blue,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20),
-                            ),
+                        TextButton(
+                          child: Text(
+                            'Confirm',
+                            style: TextStyle(
+                                fontSize: 20.0, color: MyColors.white),
                           ),
-                          //margin: EdgeInsets.all(25),
-                          child: FlatButton(
-                            child: Text(
-                              'Confirm',
-                              style: TextStyle(fontSize: 20.0),
-                            ),
-                            textColor: Colors.white,
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                _formKey.currentState!.save();
-                                var data = Profile(
-                                  username: usernameController,
-                                  phone: phoneController,
-                                  email: widget.profile.email,
-                                  image: widget.profile.image,
-                                  userType: widget.profile.userType,
-                                  userTypeId: widget.profile.userTypeId,
-                                  companyId: widget.profile.companyId,
-                                  companyName: widget.profile.companyName,
-                                );
-                                BlocProvider.of<UpdateProfileBloc>(context).add(
-                                    UpdateProfileInfoEvent(
-                                        profile: data, context: context));
-                              }
-                            },
+                          style: TextButton.styleFrom(
+                            backgroundColor: MyColors.blue,
+                            fixedSize: Size.fromWidth(
+                                MediaQuery.of(context).size.width),
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              _formKey.currentState!.save();
+                              var data = Profile(
+                                username: usernameController,
+                                phone: phoneController,
+                                email: widget.profile.email,
+                                image: widget.profile.image,
+                                userType: widget.profile.userType,
+                                userTypeId: widget.profile.userTypeId,
+                                companyId: widget.profile.companyId,
+                                companyName: widget.profile.companyName,
+                              );
+                              BlocProvider.of<UpdateProfileBloc>(context).add(
+                                  UpdateProfileInfoEvent(
+                                      profile: data, context: context));
+                            }
+                          },
                         ),
                         SizedBox(
                           height: 10,
                         ),
-                        Container(
-                          width: width(context),
-                          decoration: BoxDecoration(
-                            color: MyColors.blue,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20),
-                            ),
+                        TextButton(
+                          child: Text(
+                            'Change Password',
+                            style: TextStyle(
+                                fontSize: 20.0, color: MyColors.white),
                           ),
-                          //margin: EdgeInsets.all(25),
-                          child: FlatButton(
-                            child: Text(
-                              'Change Password',
-                              style: TextStyle(fontSize: 20.0),
-                            ),
-                            textColor: Colors.white,
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute<void>(
-                                    builder: (BuildContext context) =>
-                                        const PasswordChangeWidget(),
-                                  ));
-                            },
+                          style: TextButton.styleFrom(
+                            backgroundColor: MyColors.blue,
+                            fixedSize: Size.fromWidth(
+                                MediaQuery.of(context).size.width),
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      const PasswordChangeWidget(),
+                                ));
+                          },
                         ),
                         SizedBox(
                           height: 10,
                         ),
-                        Container(
-                          width: width(context),
-                          decoration: BoxDecoration(
-                            color: MyColors.blue,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20),
-                            ),
+                        TextButton(
+                          child: Text(
+                            'Change Email',
+                            style: TextStyle(
+                                fontSize: 20.0, color: MyColors.white),
                           ),
-                          //margin: EdgeInsets.all(25),
-                          child: FlatButton(
-                            child: Text(
-                              'Change Email',
-                              style: TextStyle(fontSize: 20.0),
-                            ),
-                            textColor: Colors.white,
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute<void>(
-                                    builder: (BuildContext context) =>
-                                        const UpdateEmailWidget(),
-                                  ));
-                            },
+                          style: TextButton.styleFrom(
+                            backgroundColor: MyColors.blue,
+                            fixedSize: Size.fromWidth(
+                                MediaQuery.of(context).size.width),
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      const UpdateEmailWidget(),
+                                ));
+                          },
                         ),
                       ],
                     ))

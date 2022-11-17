@@ -28,7 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //extendBodyBehindAppBar: true,
+      backgroundColor: MyColors.greyBlue,
       appBar: PreferredSize(
           child: ProfileAppbar(
             isEdit: false,
@@ -85,8 +85,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           Text(
                             'Username',
-                            style: TextStyle(
-                                color: MyColors.lightFont, fontSize: 13),
+                            style:
+                                TextStyle(color: MyColors.white, fontSize: 13),
                           ),
                           SizedBox(
                             height: 5,
@@ -94,7 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Text(
                             state.profile.username,
                             style: TextStyle(
-                                color: MyColors.font,
+                                color: MyColors.white,
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold),
                           )
@@ -120,8 +120,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           Text(
                             'Email',
-                            style: TextStyle(
-                                color: MyColors.lightFont, fontSize: 13),
+                            style:
+                                TextStyle(color: MyColors.white, fontSize: 13),
                           ),
                           SizedBox(
                             height: 5,
@@ -129,7 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Text(
                             state.profile.email,
                             style: TextStyle(
-                                color: MyColors.font,
+                                color: MyColors.white,
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold),
                           )
@@ -155,8 +155,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           Text(
                             'Password',
-                            style: TextStyle(
-                                color: MyColors.lightFont, fontSize: 13),
+                            style:
+                                TextStyle(color: MyColors.white, fontSize: 13),
                           ),
                           SizedBox(
                             height: 5,
@@ -164,7 +164,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Text(
                             '*******',
                             style: TextStyle(
-                                color: MyColors.font,
+                                color: MyColors.white,
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold),
                           )
@@ -190,8 +190,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           Text(
                             'Phone',
-                            style: TextStyle(
-                                color: MyColors.lightFont, fontSize: 13),
+                            style:
+                                TextStyle(color: MyColors.white, fontSize: 13),
                           ),
                           SizedBox(
                             height: 5,
@@ -199,7 +199,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Text(
                             state.profile.phone,
                             style: TextStyle(
-                                color: MyColors.font,
+                                color: MyColors.white,
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold),
                           )
@@ -225,8 +225,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           Text(
                             'Company',
-                            style: TextStyle(
-                                color: MyColors.lightFont, fontSize: 13),
+                            style:
+                                TextStyle(color: MyColors.white, fontSize: 13),
                           ),
                           SizedBox(
                             height: 5,
@@ -234,7 +234,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Text(
                             state.profile.companyName,
                             style: TextStyle(
-                                color: MyColors.font,
+                                color: MyColors.white,
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold),
                           )

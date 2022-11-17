@@ -1,3 +1,4 @@
+import 'package:clean_app_sample/core/material/colors.dart';
 import 'package:clean_app_sample/features/home/presentation/pages/home.dart';
 import 'package:clean_app_sample/features/login/data/datasources/login_local_data_source.dart';
 import 'package:clean_app_sample/features/login/presentation/bloc/login_bloc.dart';
@@ -61,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
           if (state is ErrorLoginState) {
             final snackBar = SnackBar(content: Text(state.message));
             // ignore: deprecated_member_use
-            Scaffold.of(context).showSnackBar(snackBar);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           } else if (state is LoadedLoginState) {
             Navigator.pushReplacement(
               context,
@@ -174,10 +175,12 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       height: 30.0,
                     ),
-                    FlatButton(
-                      minWidth: MediaQuery.of(context).size.width,
-                      height: 40,
-                      color: Color.fromARGB(255, 4, 60, 105),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        fixedSize:
+                            Size.fromWidth(MediaQuery.of(context).size.width),
+                        backgroundColor: Color.fromARGB(255, 4, 60, 105),
+                      ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           BlocProvider.of<LoginBloc>(context)

@@ -66,7 +66,7 @@ class _ProfileAppbarState extends State<ProfileAppbar> {
           } else {
             profile = state.profile;
             return Container(
-              height: height(context) / 3,
+              height: height(context) / 2.7,
               child: Stack(
                 fit: StackFit.loose,
                 children: [
@@ -157,65 +157,65 @@ class _ProfileAppbarState extends State<ProfileAppbar> {
                           ],
                         ),
                       )),
-                  Positioned(
-                    bottom: 0,
-                    left: 30,
-                    right: 30,
-                    child: Container(
-                      height: height(context) / 5.3,
-                      width: width(context) / 5.2,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: imageFile == null
-                              ? DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: NetworkImage(state.profile.image),
-                                )
-                              : DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: FileImage(File(image!.path)),
-                                )),
-                    ),
-                  ),
-                  widget.isEdit
-                      ? Positioned(
-                          top: 152,
-                          left: 141,
-                          right: 141,
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0),
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onTap: () {
-                                showAlertDialog(context);
-                              },
-                              child: Container(
-                                height: height(context) / 10,
-                                width: width(context) / 13,
-                                decoration: BoxDecoration(
-                                  //shape: BoxShape.circle,
-                                  color: Colors.white.withOpacity(0.8),
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(100),
-                                    bottomRight: Radius.circular(100),
-                                  ),
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                        '${Constants.imgPath}camera.png'),
+                  Stack(
+                    children: [
+                      Positioned(
+                        top: 90,
+                        left: 30,
+                        right: 30,
+                        child: Container(
+                          height: height(context) / 5.3,
+                          width: width(context) / 5.2,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: imageFile == null
+                                  ? DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: NetworkImage(state.profile.image),
+                                    )
+                                  : DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: FileImage(File(image!.path)),
+                                    )),
+                        ),
+                      ),
+                      widget.isEdit
+                          ? Positioned(
+                              bottom: 24,
+                              left: 141,
+                              right: 141,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.translucent,
+                                onTap: () {
+                                  showAlertDialog(context);
+                                },
+                                child: Container(
+                                  height: height(context) / 9,
+                                  width: width(context) / 5.3,
+                                  decoration: BoxDecoration(
+                                    //shape: BoxShape.circle,
+                                    color: Colors.white.withOpacity(0.8),
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(100),
+                                      bottomRight: Radius.circular(100),
+                                    ),
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                          '${Constants.imgPath}camera.png'),
 
-                                    ///fit: BoxFit.cover,
+                                      ///fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ))
-                      : Container(),
+                            )
+                          : Container(),
+                    ],
+                  )
                 ],
               ),
             );
           }
-
-          ;
         }
         return const Center(child: CircularProgressIndicator());
       },

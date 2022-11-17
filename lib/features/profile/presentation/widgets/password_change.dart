@@ -32,34 +32,36 @@ class _PasswordChangeWidgetState extends State<PasswordChangeWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        child: CommonAppbar(),
-        preferredSize: Size.fromHeight(height(context) * .06),
-      ),
-      body: BlocBuilder<UpdatePasswordBloc, UpdatePasswordState>(
-        builder: (context, state) {
-          print("state is $state");
-          if (state is UpdatePasswordInitial) {
-            return _buildBody();
-          }
-          if (state is LoadingUpdatePasswordState) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+        backgroundColor: MyColors.greyBlue,
+        appBar: PreferredSize(
+          child: CommonAppbar(),
+          preferredSize: Size.fromHeight(height(context) / 5),
+        ),
+        body: SingleChildScrollView(
+          child: BlocConsumer<UpdatePasswordBloc, UpdatePasswordState>(
+            listener: (context, state) {
+              if (state is ErrorUpdatePasswordState) {
+                AlertMessage().alert(context, state.message);
+              }
 
-          if (state is ErrorUpdatePasswordState) {
-            return Center(child: AlertMessage().alert(context, state.message));
-          }
+              if (state is SuccessUpdatePasswordState) {
+                AlertMessage().alert(context, state.message);
+                Navigator.pop(context);
+              }
+              if (state is LoadingUpdatePasswordState) {
+                AlertMessage().loading(context);
+              }
+            },
+            builder: (context, state) {
+              print("state is $state");
+              if (state is UpdatePasswordInitial) {
+                return _buildBody();
+              }
 
-          if (state is SuccessUpdatePasswordState) {
-            return Center(child: AlertMessage().alert(context, state.message));
-          }
-
-          return _buildBody();
-        },
-      ),
-    );
+              return _buildBody();
+            },
+          ),
+        ));
   }
 
   _buildBody() {
@@ -169,33 +171,30 @@ class _PasswordChangeWidgetState extends State<PasswordChangeWidget> {
               Align(
                   alignment: Alignment.bottomCenter,
                   child: Column(children: [
-                    Container(
-                      width: width(context),
-                      decoration: BoxDecoration(
-                        color: MyColors.blue,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20),
-                        ),
+                    TextButton(
+                      child: Text(
+                        'Confirm',
+                        style: TextStyle(fontSize: 20.0, color: MyColors.white),
                       ),
-                      //margin: EdgeInsets.all(25),
-                      child: FlatButton(
-                        child: Text(
-                          'Confirm',
-                          style: TextStyle(fontSize: 20.0),
-                        ),
-                        textColor: Colors.white,
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
+                      style: TextButton.styleFrom(
+                        backgroundColor: MyColors.blue,
+                        fixedSize:
+                            Size.fromWidth(MediaQuery.of(context).size.width),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
 
-                            BlocProvider.of<UpdatePasswordBloc>(context).add(
-                                UpdatePasswordProfileEvent(
-                                    currentPassword: oldPassword.text,
-                                    newPassword: newPassword.text,
-                                    context: context));
-                          }
-                        },
-                      ),
+                          BlocProvider.of<UpdatePasswordBloc>(context).add(
+                              UpdatePasswordProfileEvent(
+                                  currentPassword: oldPassword.text,
+                                  newPassword: newPassword.text,
+                                  context: context));
+                        }
+                      },
                     ),
                   ]))
             ],

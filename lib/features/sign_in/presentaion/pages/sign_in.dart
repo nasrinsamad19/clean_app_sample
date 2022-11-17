@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:clean_app_sample/core/material/colors.dart';
 import 'package:clean_app_sample/features/home/presentation/pages/home.dart';
 import 'package:clean_app_sample/features/login/presentation/bloc/login_bloc.dart';
 import 'package:clean_app_sample/features/login/presentation/pages/login_page.dart';
@@ -54,7 +55,7 @@ class _SiginPageState extends State<SiginPage> {
           if (state is ErrorSignState) {
             final snackBar = SnackBar(content: Text(state.message));
             // ignore: deprecated_member_use
-            Scaffold.of(context).showSnackBar(snackBar);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           } else if (state is LoadedSignState) {
             Navigator.pushReplacement(
               context,
@@ -284,10 +285,13 @@ class _SiginPageState extends State<SiginPage> {
                     SizedBox(
                       height: 30.0,
                     ),
-                    FlatButton(
-                      minWidth: MediaQuery.of(context).size.width,
-                      height: 40,
-                      color: Color.fromARGB(255, 4, 60, 105),
+                    ElevatedButton(
+                      // minWidth: MediaQuery.of(context).size.width,
+                      // height: 40,
+                      // color: Color.fromARGB(255, 4, 60, 105),
+                      style: TextButton.styleFrom(
+                          fixedSize: Size.fromHeight(150),
+                          backgroundColor: MyColors.blue),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           BlocProvider.of<SignInBloc>(context)

@@ -6,4 +6,6 @@ abstract class MyColors {
   static const blue = Color(0xff20C1DB);
   static const font = Color(0xff3B3B3B);
   static const lightFont = Color(0xff9F9F9F);
+  static const greyBlue = Color(0xff3d4866);
+  static const lightBlue = Color(0xff56c8d8);
 }

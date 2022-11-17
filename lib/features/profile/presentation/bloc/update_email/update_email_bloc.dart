@@ -29,7 +29,7 @@ class UpdateEmailBloc extends Bloc<UpdateEmailEvent, UpdateEmailState> {
           message: _mapFailureToMessage(failure, context));
     },
         (emailToken) => SuccessUpdateEmailState(
-            message: 'Image Uploaded', emailToken: emailToken));
+            message: 'Email code sented', emailToken: emailToken));
   }
 
   String _mapFailureToMessage(Failure failure, BuildContext context) {
